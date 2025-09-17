@@ -1,0 +1,36 @@
+# Node dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Environment files (never bake secrets into images)
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# VS Code / IDE
+.vscode
+.idea
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build outputs (re-generated on container build)
+dist
+build
+.cache
+.tmp
+
+# Test / coverage
+coverage
+*.test.js
+*.spec.js

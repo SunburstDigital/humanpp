@@ -1,0 +1,31 @@
+# fly.toml app configuration file generated for sunburst-voice on 2025-09-08T15:57:00+08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'sunburst-voice'
+primary_region = 'syd'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  PORT = '3000'
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 3000
+  processes = ['app']
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
+
+  [[services.ports]]
+    port = 80
+    handlers = ['http']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
