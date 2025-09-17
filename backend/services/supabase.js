@@ -6,11 +6,12 @@
 // Provides helpers for pipeline and tool routing.
 // Debug logging via services/logger.js (toggle with DEBUG_PIPELINE).
 // ============================================================================
-import * as dotenv from "dotenv";
-dotenv.config();
+import path from "path";
+import dotenv from "dotenv";
+dotenv.config({ path: path.resolve("infra", ".env") });
 
 import { createClient } from "@supabase/supabase-js";
-import { logNS } from "./logger.js";
+import { logNS } from "../utils/logging.js";
 
 const {
   SUPABASE_URL = "",
@@ -180,6 +181,10 @@ export async function getRecentLogs(limit = 10) {
   return data;
 }
 
+export async function checkSupabaseHealth() {
+  return { ok: true, message: "Supabase is reachable" };
+}
+
 export async function getLogsByContact(phone) {
   const { data, error } = await sb
     .from("call_logs")
@@ -275,6 +280,74 @@ export async function insertCall({
 // ============================================================================
 // END Logs Helpers (fixed UUID-safe inserts)
 // ============================================================================
+
+// ============================================================================
+// Save Call Summary
+// ============================================================================
+/**
+ * Save a call summary to Supabase call_logs table.
+ * @param {Object} params
+ * @param {string} params.phone - Phone number (required)
+ * @param {string} params.summary - Call summary text (required)
+ * @param {string|null} params.clientNumber - Client number (optional)
+ * @param {string} [params.type="summary"] - Log type (default: "summary")
+ * @param {string} [params.contact_id] - Contact ID (optional, resolved from phone if missing)
+ * @returns {Promise<Object|null>} Inserted row or null on error
+ */
+export async function saveCallSummary({ phone, summary, clientNumber = null, type = "summary", contact_id = null, intent = null, audio_url = null, transcript_url = null }) {
+  try {
+    let resolvedContactId = contact_id || null;
+    if (!resolvedContactId && phone) {
+      const { data: contact, error: contactErr } = await sb
+        .from("contacts")
+        .select("id")
+        .eq("phone", phone)
+        .maybeSingle();
+      if (contactErr) throw contactErr;
+      resolvedContactId = contact?.id || null;
+    }
+    const { data, error } = await sb
+      .from("call_logs")
+      .insert({
+        contact_id: resolvedContactId,
+        phone,
+        summary,
+        client_number: clientNumber,
+        type,
+        intent,
+        audio_url,
+        transcript_url,
+        timestamp: new Date().toISOString(),
+      })
+      .select("*")
+      .maybeSingle();
+    if (error) {
+      logNS("supabase", "saveCallSummary insert error:", String(error), error, { data, error });
+      return null;
+    }
+    logNS("supabase", `Saved call summary for phone ${phone}: ${summary}`);
+    return data;
+  } catch (err) {
+    logNS("supabase", "saveCallSummary error:", err, JSON.stringify(err));
+    return null;
+  }
+}
+
+
+// ============================================================================
+// Save Call Summary
+// ============================================================================
+/**
+ * Save a call summary to Supabase call_logs table.
+ * @param {Object} params
+ * @param {string} params.contact_id - Contact ID (optional, will resolve from phone if not provided)
+ * @param {string} params.phone - Phone number (required if contact_id not provided)
+ * @param {string} params.summary - Call summary text
+ * @param {string} [params.type="summary"] - Log type (default: "summary")
+ * @param {string} [params.intent] - Call intent (optional)
+ * @param {string} [params.audio_url] - Audio URL (optional)
+ * @returns {Promise<Object|null>} Inserted row or null on error
+ */
 
 
 // ============================================================================

@@ -5,6 +5,7 @@
 import { getListingsByIds, upsertContact, makeInvoke, saveLog } from "../services/supabase.js";
 import { searchListingSnippets } from "../services/pinecone.js";
 import { logger } from "../utils/logging.js";
+import { getTranscriptSignedUrl } from "../utils/url-generator.js";
 
 export async function routeToolCall(name, args, { from, to, callSid }) {
   try {

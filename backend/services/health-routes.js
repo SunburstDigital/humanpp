@@ -5,10 +5,8 @@ export default async function healthRoutes(fastify) {
   fastify.get("/health/deps", async () => {
     // dynamic import so module side-effects aren’t duplicated
     const pine = await import("./pinecone.js");
-    const supa = await import("../supabase-functions.js").catch(() => null);
 
     const pineHealth = await pine.health();
-
     const supaOk = !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY);
 
     return {

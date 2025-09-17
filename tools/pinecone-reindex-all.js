@@ -4,7 +4,7 @@
 // What it does: re-embeds all listings (use when rolling to a new embedding model + new index name).
 import "dotenv/config.js";
 import { createClient } from "@supabase/supabase-js";
-import { indexListingSnippet } from "../services/pinecone.js";
+import { indexListingSnippet } from "../backend/services/pinecone.js";
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 

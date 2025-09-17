@@ -7,8 +7,8 @@
 //          summaries + lifecycle events.
 // ============================================================================
 
-import { upsertContact, saveLog, sb } from "../services/supabase.js";
-import { logger } from "../utils/logging.js";
+import { upsertContact, saveLog, sb, saveCallSummary } from "../services/supabase.js";
+import { logger, logNS } from "../utils/logging.js";
 
 // ---------------------------------------------------------------------------
 // Helper: upload a file into Supabase Storage (transcripts bucket)
@@ -34,6 +34,30 @@ export default async function callRoutes(app) {
   // -------------------------------------------------------------------------
   // Call status callback (Twilio posts multiple times per call lifecycle)
   // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Save call summary
+  // -------------------------------------------------------------------------
+  app.post("/calls/summary", async (req, reply) => {
+    const { phone, summary, client_number, intent, audio_url, transcript_url } = req.body || {};
+    logNS("calls", `POST /calls/summary - phone: ${phone}, client_number: ${client_number}, intent: ${intent}, audio_url: ${audio_url}, transcript_url: ${transcript_url}`);
+    if (!phone || !summary) {
+      logNS("calls", "Missing phone or summary in request body");
+      return reply.code(400).send({ ok: false, error: "Missing phone or summary" });
+    }
+    try {
+      const result = await saveCallSummary({ phone, summary, clientNumber: client_number, intent, audio_url, transcript_url });
+      if (result) {
+        logNS("calls", `Saved call summary for phone ${phone}`);
+        return reply.code(200).send({ ok: true });
+      } else {
+        logNS("calls", `Failed to save call summary for phone ${phone}`);
+        return reply.code(500).send({ ok: false, error: "Failed to save call summary" });
+      }
+    } catch (err) {
+      logNS("calls", `Error saving call summary: ${err.message}`);
+      return reply.code(500).send({ ok: false, error: err.message });
+    }
+  });
   app.post("/twilio/call-status", async (req, reply) => {
     const callSid = req.body?.CallSid || "no-sid";
     const status = req.body?.CallStatus || "unknown";

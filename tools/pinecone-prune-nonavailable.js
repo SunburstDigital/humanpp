@@ -6,7 +6,7 @@
 //run in powershell =node scripts/pinecone-prune-nonavailable.js
 
 import "dotenv/config.js";
-import { deleteByFilter } from "../services/pinecone.js";
+import { deleteByFilter } from "../backend/services/pinecone.js";
 
 const companyId = process.argv[2] || process.env.COMPANY_ID || null;
 
