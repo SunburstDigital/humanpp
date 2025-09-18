@@ -8,16 +8,21 @@
     "dev": "nodemon backend/app.js"
   },
   "dependencies": {
-    "fastify": "^4.25.1",
-    "dotenv": "^16.3.1",
-    "pino": "^8.17.0",
-    "openai": "^4.27.0",
-    "supabase": "^2.39.0",
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/multipart": "^9.2.1",
+    "@fastify/websocket": "^11.2.0",
+    "@supabase/supabase-js": "^2.57.4",
     "cross-fetch": "^4.0.0",
-    "pinecone-client": "^1.0.0"
+    "dotenv": "^16.3.1",
+    "fastify": "^5.6.0",
+    "openai": "^4.27.0",
+    "pinecone-client": "^1.0.0",
+    "pino": "^8.17.0",
+    "supabase": "^2.39.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "supertest": "^7.1.4"
   },
   "type": "module"
 }

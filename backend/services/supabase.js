@@ -294,7 +294,7 @@ export async function insertCall({
  * @param {string} [params.contact_id] - Contact ID (optional, resolved from phone if missing)
  * @returns {Promise<Object|null>} Inserted row or null on error
  */
-export async function saveCallSummary({ phone, summary, clientNumber = null, type = "summary", contact_id = null, intent = null, audio_url = null, transcript_url = null }) {
+export async function saveCallSummary({ phone, summary, clientNumber = null, type = "summary", contact_id = null, intent = null, audio_path = null, transcript_path = null }) {
   try {
     let resolvedContactId = contact_id || null;
     if (!resolvedContactId && phone) {
@@ -315,20 +315,22 @@ export async function saveCallSummary({ phone, summary, clientNumber = null, typ
         client_number: clientNumber,
         type,
         intent,
-        audio_url,
-        transcript_url,
+        audio_path,
+        transcript_path,
         timestamp: new Date().toISOString(),
       })
       .select("*")
       .maybeSingle();
     if (error) {
       logNS("supabase", "saveCallSummary insert error:", String(error), error, { data, error });
+      console.error('saveCallSummary insert error:', error); // <-- Explicit error log
       return null;
     }
     logNS("supabase", `Saved call summary for phone ${phone}: ${summary}`);
     return data;
   } catch (err) {
     logNS("supabase", "saveCallSummary error:", err, JSON.stringify(err));
+    console.error('saveCallSummary error:', err); // <-- Explicit error log
     return null;
   }
 }
@@ -346,7 +348,6 @@ export async function saveCallSummary({ phone, summary, clientNumber = null, typ
  * @param {string} [params.type="summary"] - Log type (default: "summary")
  * @param {string} [params.intent] - Call intent (optional)
  * @param {string} [params.audio_url] - Audio URL (optional)
- * @returns {Promise<Object|null>} Inserted row or null on error
  */
 
 
