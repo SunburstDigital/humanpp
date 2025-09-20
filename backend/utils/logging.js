@@ -3,7 +3,7 @@
 // Purpose: Centralised logging using Pino. Works with Fastify, falls back gracefully
 // ======================================================================================
 
-import pino from "pino";
+const pino = require("pino");
 
 function buildLogger() {
   // In production: plain JSON logs
@@ -31,17 +31,19 @@ function buildLogger() {
   }
 }
 
-export const logger = buildLogger();
+const logger = buildLogger();
 
 /**
  * Namespace logger for consistent log output.
  * @param {string} ns - Namespace (e.g. 'supabase')
  * @param {...any} args - Log message and data
  */
-export function logNS(ns, ...args) {
+function logNS(ns, ...args) {
   if (logger && typeof logger.info === "function") {
     logger.info({ ns }, ...args);
   } else {
     console.log(`[${ns}]`, ...args);
   }
 }
+
+module.exports = { logger, logNS };

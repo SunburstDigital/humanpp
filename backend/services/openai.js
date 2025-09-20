@@ -6,15 +6,15 @@
 // - Works with Node 18+ (uses global fetch)
 // ============================================================================
 
-import * as dotenv from "dotenv";
+const dotenv = require("dotenv");
 dotenv.config();
 
 // Model helpers ---------------------------------------------------------------
-export function getEmbedModel() {
+function getEmbedModel() {
   return process.env.OPENAI_EMBED_MODEL || "text-embedding-3-small";
 }
 
-export function embedDimension(model = getEmbedModel()) {
+function embedDimension(model = getEmbedModel()) {
   // Known dims (OpenAI):
   // - text-embedding-3-small: 1536
   // - text-embedding-3-large: 3072
@@ -44,17 +44,24 @@ async function _postEmbeddings(input) {
   return res.json();
 }
 
-export async function embedText(texts = []) {
+async function embedText(texts = []) {
   if (!Array.isArray(texts)) throw new Error("embedText expects an array of strings");
   if (texts.length === 0) return [];
   const json = await _postEmbeddings(texts);
   return (json?.data || []).map((d) => d.embedding);
 }
 
-export async function embedOne(text = "") {
+async function embedOne(text = "") {
   const [vec] = await embedText([text]);
   return vec;
 }
+
+module.exports = {
+  getEmbedModel,
+  embedDimension,
+  embedText,
+  embedOne,
+};
 
 // ============================================================================
 // END File services/openai.js

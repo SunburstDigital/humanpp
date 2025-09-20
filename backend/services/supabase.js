@@ -6,12 +6,12 @@
 // Provides helpers for pipeline and tool routing.
 // Debug logging via services/logger.js (toggle with DEBUG_PIPELINE).
 // ============================================================================
-import path from "path";
-import dotenv from "dotenv";
+const path = require("path");
+const dotenv = require("dotenv");
 dotenv.config({ path: path.resolve("infra", ".env") });
 
-import { createClient } from "@supabase/supabase-js";
-import { logNS } from "../utils/logging.js";
+const { createClient } = require("@supabase/supabase-js");
+const { logNS } = require("../utils/logging.js");
 
 const {
   SUPABASE_URL = "",
@@ -21,11 +21,11 @@ const {
 const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
   auth: { persistSession: false },
 });
-export { sb };
+
 // ============================================================================
 // START Client Prompts
 // ============================================================================
-export async function getClientPromptByNumber(calledNumber) {
+async function getClientPromptByNumber(calledNumber) {
   if (!calledNumber) return "";
   const { data, error } = await sb
     .from("prompts")
@@ -41,7 +41,7 @@ export async function getClientPromptByNumber(calledNumber) {
   return data?.prompt || "";
 }
 
-export async function setPromptForClient({
+async function setPromptForClient({
   client_number,
   prompt,
   voice = "alloy",
@@ -58,8 +58,8 @@ export async function setPromptForClient({
     if (error) throw error;
     logNS("supabase", `Updated prompt for client ${client_number}`);
     return data;
-  } catch (err) {
-    logNS("supabase", "setPromptForClient error:", err.message);
+  } catch (e) {
+    logNS("supabase", "setPromptForClient error:", e.message);
     return null;
   }
 }
@@ -70,7 +70,7 @@ export async function setPromptForClient({
 // ============================================================================
 // START Contacts
 // ============================================================================
-export async function upsertContact({ phone, name, clientNumber }) {
+async function upsertContact({ phone, name, clientNumber }) {
   if (!phone) return null;
   const { data, error } = await sb
     .from("contacts")
@@ -95,7 +95,7 @@ export async function upsertContact({ phone, name, clientNumber }) {
 // ============================================================================
 // START Listings
 // ============================================================================
-export async function getListingsByIds(clientNumber, ids = []) {
+async function getListingsByIds(clientNumber, ids = []) {
   if (!ids?.length) return [];
   const { data, error } = await sb
     .from("listings")
@@ -117,7 +117,7 @@ export async function getListingsByIds(clientNumber, ids = []) {
 // ============================================================================
 // START Transcripts
 // ============================================================================
-export async function saveCallTranscript({
+async function saveCallTranscript({
   callId,
   phone,
   clientNumber,
@@ -153,7 +153,7 @@ export async function saveCallTranscript({
 // ============================================================================
 // START Make Webhooks
 // ============================================================================
-export async function makeInvoke(url, payload) {
+async function makeInvoke(url, payload) {
   if (!url) throw new Error("Missing Make webhook URL");
   const res = await fetch(url, {
     method: "POST",
@@ -170,7 +170,7 @@ export async function makeInvoke(url, payload) {
 // ============================================================================
 // START Logs Helpers (fixed UUID-safe inserts)
 // ============================================================================
-export async function getRecentLogs(limit = 10) {
+async function getRecentLogs(limit = 10) {
   const { data, error } = await sb
     .from("call_logs")
     .select("*")
@@ -181,11 +181,11 @@ export async function getRecentLogs(limit = 10) {
   return data;
 }
 
-export async function checkSupabaseHealth() {
+async function checkSupabaseHealth() {
   return { ok: true, message: "Supabase is reachable" };
 }
 
-export async function getLogsByContact(phone) {
+async function getLogsByContact(phone) {
   const { data, error } = await sb
     .from("call_logs")
     .select("*")
@@ -196,7 +196,7 @@ export async function getLogsByContact(phone) {
   return data;
 }
 
-export async function saveLog({ contact_id, phone, summary, type = "generic" }) {
+async function saveLog({ contact_id, phone, summary, type = "generic" }) {
   try {
     let resolvedContactId = contact_id || null;
 
@@ -232,7 +232,7 @@ export async function saveLog({ contact_id, phone, summary, type = "generic" }) 
   }
 }
 
-export async function insertCall({
+async function insertCall({
   contact_id,
   phone,
   direction = "inbound",
@@ -294,7 +294,7 @@ export async function insertCall({
  * @param {string} [params.contact_id] - Contact ID (optional, resolved from phone if missing)
  * @returns {Promise<Object|null>} Inserted row or null on error
  */
-export async function saveCallSummary({ phone, summary, clientNumber = null, type = "summary", contact_id = null, intent = null, audio_path = null, transcript_path = null }) {
+async function saveCallSummary({ phone, summary, clientNumber = null, type = "summary", contact_id = null, intent = null, audio_path = null, transcript_path = null }) {
   try {
     let resolvedContactId = contact_id || null;
     if (!resolvedContactId && phone) {
@@ -354,3 +354,18 @@ export async function saveCallSummary({ phone, summary, clientNumber = null, typ
 // ============================================================================
 // END File services/supabase.js
 // ============================================================================
+module.exports = {
+  sb,
+  getClientPromptByNumber,
+  setPromptForClient,
+  upsertContact,
+  getListingsByIds,
+  saveCallTranscript,
+  makeInvoke,
+  getRecentLogs,
+  checkSupabaseHealth,
+  getLogsByContact,
+  saveLog,
+  insertCall,
+  saveCallSummary,
+};

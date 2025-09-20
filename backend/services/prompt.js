@@ -13,9 +13,9 @@
 // ============================================================================
 // START Imports
 // ============================================================================
-import { getClientPromptByNumber } from "./supabase.js";
-import { fetchCallRAM } from "./pinecone.js";
-import { logNS } from "./logger.js";
+const { getClientPromptByNumber } = require("./supabase.js");
+const { fetchCallRAM } = require("./pinecone.js");
+const { logNS } = require("../utils/logging.js");
 // ============================================================================
 // END Imports
 // ============================================================================
@@ -73,7 +73,7 @@ function formatSection(title, items) {
  * @param {number} [params.topK=5] - How many RAM items to fetch per namespace.
  * @returns {Promise<string>} - Final merged instruction text.
  */
-export async function buildSessionInstructions({
+async function buildSessionInstructions({
   calledNumber,
   phone,
   clientNumber,
@@ -131,6 +131,8 @@ export async function buildSessionInstructions({
   logNS("prompts", "Built session instructions");
   return merged;
 }
+
+module.exports = { buildSessionInstructions };
 // ============================================================================
 // END Builder
 // ============================================================================

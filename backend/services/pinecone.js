@@ -7,13 +7,13 @@
 // - Clean, lean metadata; full details come from Supabase
 // ============================================================================
 
-import { Pinecone } from "@pinecone-database/pinecone";
-import { embedText, embedOne, embedDimension, getEmbedModel } from "./openai.js";
+const { Pinecone } = require("@pinecone-database/pinecone");
+const { embedText, embedOne, embedDimension, getEmbedModel } = require("./openai.js");
 
 // Optional logger (falls back to console if missing)
 let log = (...a) => console.log(...a);
 try {
-  const mod = await import("./logger.js");
+  const mod = require("./logger.js");
   if (mod?.logNS) log = (ns, ...a) => mod.logNS(ns, ...a);
 } catch { /* noop */ }
 
@@ -75,24 +75,21 @@ async function ensureIndex() {
   }
 }
 
-// Init eagerly
-await ensureIndex();
-
-// ----------------------------------------------------------------------------
 // Embedding helpers (thin wrappers)
-// ----------------------------------------------------------------------------
 async function embed(text) { return await embedOne(text); }
 async function embedBatch(texts) { return await embedText(texts); }
 
 // ----------------------------------------------------------------------------
 // Contact Memory
 // ----------------------------------------------------------------------------
-export async function rememberContactFact(phone, text, meta = {}) {
+async function rememberContactFact(phone, text, meta = {}) {
   try {
-    if (!index || !phone || !text) return null;
+    if (!phone || !text) return null;
+    const idx = await ensureIndex();
+    if (!idx) return null;
     const vec = await embed(text);
     const id = `contact:${phone}:${Date.now()}`;
-    await index.namespace("contact").upsert([{
+    await idx.namespace("contact").upsert([{
       id,
       values: vec,
       metadata: { kind: "fact", phone, text, ...meta },
@@ -108,12 +105,14 @@ export async function rememberContactFact(phone, text, meta = {}) {
 // ----------------------------------------------------------------------------
 // Transcript Memory
 // ----------------------------------------------------------------------------
-export async function rememberTranscriptChunk(callId, phone, text, meta = {}) {
+async function rememberTranscriptChunk(callId, phone, text, meta = {}) {
   try {
-    if (!index || !callId || !text) return null;
+    if (!callId || !text) return null;
+    const idx = await ensureIndex();
+    if (!idx) return null;
     const vec = await embed(text);
     const id = `call:${callId}:${Date.now()}`;
-    await index.namespace("transcript").upsert([{
+    await idx.namespace("transcript").upsert([{
       id,
       values: vec,
       metadata: { kind: "transcript_chunk", callId, phone, text, ...meta },
@@ -129,22 +128,19 @@ export async function rememberTranscriptChunk(callId, phone, text, meta = {}) {
 // ----------------------------------------------------------------------------
 // Listing Memory (snippet + preview; hydrate full row from Supabase later)
 // ----------------------------------------------------------------------------
-export async function indexListingSnippet(listingId, companyId, summaryText, meta = {}) {
+async function indexListingSnippet(listingId, companyId, summaryText, meta = {}) {
   try {
-    if (!index || !listingId || !summaryText) return null;
-
+    if (!listingId || !summaryText) return null;
+    const idx = await ensureIndex();
+    if (!idx) return null;
     const fullDescription = (meta.fullDescription ?? "").toString();
     const descPreview = fullDescription.slice(0, 1200);
-
-    // build the embedding text (summary + full description), lightly truncated
     const embedBody = [summaryText, fullDescription].filter(Boolean).join("\n\n").slice(0, 8000);
     const vec = await embed(embedBody);
-
-    // sanitize metadata: drop null/undefined; Pinecone accepts string/number/bool/array-of-strings
     const rawMeta = {
       kind: "listing_snippet",
       listingId,
-      company_id: companyId ?? null,           // we’ll filter by this later
+      company_id: companyId ?? null,
       text: summaryText,
       descPreview,
       suburb: meta.suburb ?? null,
@@ -160,14 +156,12 @@ export async function indexListingSnippet(listingId, companyId, summaryText, met
     const cleanMeta = Object.fromEntries(
       Object.entries(rawMeta).filter(([, v]) => v !== null && v !== undefined)
     );
-
     const id = `listing:${listingId}`;
-    await index.namespace("listing").upsert([{
+    await idx.namespace("listing").upsert([{
       id,
       values: vec,
       metadata: cleanMeta,
     }]);
-
     log("pinecone", `Indexed listing snippet ${listingId} for company ${companyId || "n/a"}`);
     return { ok: true, id };
   } catch (e) {
@@ -176,17 +170,16 @@ export async function indexListingSnippet(listingId, companyId, summaryText, met
   }
 }
 
-
 // ----------------------------------------------------------------------------
 // Listing Search (returns raw Pinecone matches with metadata)
 // ----------------------------------------------------------------------------
-export async function searchListingSnippets({ clientNumber, companyId, queryText, topK = 8 }) {
-  if (!index) return [];
+async function searchListingSnippets({ clientNumber, companyId, queryText, topK = 8 }) {
+  const idx = await ensureIndex();
+  if (!idx) return [];
   const q = (queryText || "").trim() || "matching residential property listing";
   const qvec = await embed(q);
-
   try {
-    const r = await index.namespace("listing").query({
+    const r = await idx.namespace("listing").query({
       vector: qvec,
       topK,
       includeMetadata: true,
@@ -210,14 +203,14 @@ export async function searchListingSnippets({ clientNumber, companyId, queryText
 // ----------------------------------------------------------------------------
 // Fetch aggregated RAM for a call (facts + transcripts + listing recall)
 // ----------------------------------------------------------------------------
-export async function fetchCallRAM({ phone, clientNumber, companyId, queryText, topK = 5 }) {
-  if (!index) return { facts: [], transcripts: [], listings: [] };
+async function fetchCallRAM({ phone, clientNumber, companyId, queryText, topK = 5 }) {
+  const idx = await ensureIndex();
+  if (!idx) return { facts: [], transcripts: [], listings: [] };
   const q = (queryText || "").trim() || "caller context and recent needs";
   const qvec = await embed(q);
-
   async function doQuery(ns, filter) {
     try {
-      const r = await index.namespace(ns).query({
+      const r = await idx.namespace(ns).query({
         vector: qvec, topK, includeMetadata: true, filter,
       });
       return r?.matches || [];
@@ -225,11 +218,9 @@ export async function fetchCallRAM({ phone, clientNumber, companyId, queryText, 
       return [];
     }
   }
-
   const facts = await doQuery("contact", phone ? { phone } : undefined);
   const transcripts = await doQuery("transcript", phone ? { phone } : undefined);
   const listings = await doQuery("listing", (companyId || clientNumber) ? { company_id: companyId || clientNumber } : undefined);
-
   log("pinecone", `Fetched RAM for phone=${phone}, company=${companyId || clientNumber}`);
   return { facts, transcripts, listings };
 }
@@ -237,34 +228,17 @@ export async function fetchCallRAM({ phone, clientNumber, companyId, queryText, 
 // ----------------------------------------------------------------------------
 // Maintenance
 // ----------------------------------------------------------------------------
-export async function deleteNamespaceIds(namespace, ids = []) {
-  if (!index || !namespace || !ids?.length) return { ok: false, deleted: 0 };
-  try {
-    await index.namespace(namespace).deleteMany(ids);
-    log("pinecone", `Deleted ${ids.length} ids from ${namespace}`);
-    return { ok: true, deleted: ids.length };
-  } catch (e) {
-    log("pinecone", "deleteNamespaceIds error:", e?.message);
-    return { ok: false, deleted: 0 };
-  }
+async function deleteNamespaceIds(namespace, ids = []) {
+  const idx = await ensureIndex();
+  if (!idx || !namespace || !ids?.length) return;
+  await idx.namespace(namespace).deleteMany(ids);
 }
 
-export async function deleteByFilter(namespace, filter) {
-  if (!index || !namespace || !filter) return { ok: false };
-  try {
-    await index.namespace(namespace).deleteAll({ filter });
-    log("pinecone", `Deleted by filter in ${namespace}`);
-    return { ok: true };
-  } catch (e) {
-    log("pinecone", "deleteByFilter error:", e?.message);
-    return { ok: false };
-  }
-}
-
-export async function health() {
-  return { ok: !!index, index: PINECONE_INDEX };
-}
-
-// ============================================================================
-// END File services/pinecone.js
-// ============================================================================
+module.exports = {
+  rememberContactFact,
+  rememberTranscriptChunk,
+  indexListingSnippet,
+  searchListingSnippets,
+  fetchCallRAM,
+  deleteNamespaceIds,
+};

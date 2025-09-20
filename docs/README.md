@@ -1,37 +1,116 @@
-# Create a README.md file that indexes all included markdown files
+Sunburst Digital AI – Documentation
 
-readme_content = """# 📚 Human++ AI – Project Documentation Index
+This folder contains all technical + process docs for Human++ Core and the Comms/Conversation System.
+Rule: If it’s not in /docs, it didn’t happen.
 
-Welcome to the documentation hub for the Sunburst Digital AI (Human++) project. Below is an index of all core `.md` documents bundled in this release.
+✅ Core Docs (Human++)
 
-## ✅ Core Docs
+client-onboarding.md
+ → Initial onboarding process.
 
-- [Client Onboarding Guide](client-onboarding.md)
-- [Project Checklist](project-checklist.md)
-- [System Prompts](system-prompts.md)
-- [Roadmap](roadmap.md)
-- [AI Testbed Setup](ai-testbed.md)
+project-checklist.md
+ → Tasks and milestones.
 
-## 🧠 AI + Prompt Infrastructure
+Tech Tasks And Dev Modules.docx
+ → Technical breakdowns.
 
-- [AI Outbound Call Policy](ai-outbound-call-policy.md)
-- [eSIM Call Routing Policy](esim-call-routing-policy.md)
-- [GPT Realtime Integration](gpt-realtime-integration.md)
-- [Pinecone Schema Reference](pinecone-schema.md)
-- [Calendar Sync Guide](calendar-sync-guide.md)
-- [Messaging & Channel Guide](messaging-guide.md)
+system-prompts.md
+ → Prompt libraries + flow references.
 
----
+twilio-routing.js
+ → Early routing logic.
 
-All documents above are managed as part of the `/docs` directory in your GitHub repo.
-"""
+calendar-sync-guide.md
+ → Calendar integration notes.
 
-# Write README.md to the docs folder before zipping again
-readme_path = zip_dir / "README.md"
-readme_path.write_text(readme_content)
+gpt-realtime-integration.md
+ → Realtime AI integration guide.
 
-# Recreate the ZIP file including the new README
-zip_path_final = "/mnt/data/humanpp_docs_bundle_with_readme.zip"
-shutil.make_archive(zip_path_final.replace(".zip", ""), 'zip', zip_dir)
+Ai Voice System Project Spec.docx
+ → Voice system spec.
 
-zip_path_final
+Client Setup Checklist.docx
+ → What’s needed for client builds.
+
+Supabase Schema - Ai Voice System.docx
+ → Early schema notes.
+
+fastify-endpoints.js
+ → Endpoint definitions.
+
+pinecone-schema.md
+ → Memory schema notes.
+
+supabase-schema.sql
+ → SQL schema draft.
+
+transcript-endpoints.js
+ → Transcript logic.
+
+Client Portal MVP Map.docx
+ → Portal structure.
+
+Prompt Flow Builder.docx
+ → Prompt flow buildout.
+
+roadmap.md
+ → Development roadmap.
+
+ai-testbed.md
+ → Testbed notes.
+
+messaging-guide.md
+ → Messaging framework.
+
+📞 Comms + Conversation Docs
+
+telnyx-setup.md
+ → Why Telnyx was rejected.
+
+plivo-vs-twilio.md
+ → Feature + cost comparison.
+
+comms-strategy.md
+ → Codec rules, latency targets, failover.
+
+conversation-schema.md
+ → Final SQL schema.
+
+conversation-lifecycle.md
+ → Active, stale, expired, guest rules.
+
+active-sessions.md
+ → Live session management.
+
+copilot-master-prompt.md
+ → Canonical Copilot Pro prompt (routes + tests).
+
+onboarding-checklist.md
+ → Client info collection (numbers, staff, socials).
+
+dev-notes.md
+ → Gotchas, rules, open questions.
+
+🚦 Quick Start
+
+New client? → onboarding-checklist.md
+
+Voice/number setup? → plivo-vs-twilio.md
+
+Conversation logic? → conversation-lifecycle.md
+
+Building routes? → copilot-master-prompt.md
+
+Debugging? → dev-notes.md
+
+🔑 Rules of Thumb
+
+Phone number = universal key. Guests expire after 24h and get deleted.
+
+Opus = orb/web only. PSTN = G.711.
+
+Twilio first. Plivo is cost fallback.
+
+Scrapers = Playwright/Cheerio in repo. No Apify needed.
+
+Docs = source of truth. If it’s not here, it didn’t happen.
