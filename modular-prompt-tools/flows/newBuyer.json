@@ -1,0 +1,10 @@
+{
+  "id": "newBuyer",
+  "description": "Prompt flow for a new property buyer inquiry.",
+  "steps": [
+    "greet_buyer",
+    "collect_requirements",
+    "property_search",
+    "book_viewing"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "newRenter",
+  "description": "Prompt flow for a new property renter inquiry.",
+  "steps": [
+    "greet_renter",
+    "collect_renter_requirements",
+    "property_search",
+    "book_viewing"
+  ]
+}
