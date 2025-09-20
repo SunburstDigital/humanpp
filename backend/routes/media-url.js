@@ -2,10 +2,10 @@
 // File: routes/media-url.js
 // Purpose: Expose a GET /media-url endpoint for generating signed Supabase Storage URLs
 // ======================================================================================
-import { getTranscriptSignedUrl } from "../utils/url-generator.js";
-import { logger } from "../utils/logging.js";
+const { getTranscriptSignedUrl } = require("../utils/url-generator.js");
+const { logger } = require("../utils/logging.js");
 
-export default async function mediaUrlRoutes(app) {
+async function mediaUrlRoutes(app) {
   app.get("/media-url", async (req, reply) => {
     const path = req.query?.path;
     const expires = parseInt(req.query?.expires, 10) || 3600;
@@ -21,3 +21,5 @@ export default async function mediaUrlRoutes(app) {
     }
   });
 }
+
+module.exports = mediaUrlRoutes;

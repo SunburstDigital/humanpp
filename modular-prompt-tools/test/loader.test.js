@@ -1,6 +1,6 @@
 // loader.test.js
 // Stub test for promptLoader
-import { loadPromptById } from '../loader/promptLoader.js';
+const { loadPromptById } = require('../loader/promptLoader.js');
 
 test('loadPromptById overlays persona and slang', async () => {
   const prompt = await loadPromptById('testPrompt', { persona: 'friendly', slang: 'Aussie' });

@@ -9,10 +9,10 @@
 // Uses shared OpenAI wrapper (services/openai.js). Debug via logger.js.
 // ============================================================================
 
-import { saveCallTranscript } from "./supabase.js";
-import { rememberTranscriptChunk, rememberContactFact } from "./pinecone.js";
-import { chatComplete } from "./openai.js";
-import { logNS } from "./logger.js";
+const { saveCallTranscript } = require("./supabase.js");
+const { rememberTranscriptChunk, rememberContactFact } = require("./pinecone.js");
+const { chatComplete } = require("./openai.js");
+const { logNS } = require("./logger.js");
 
 function chunkText(str, size = 1500) {
   const s = String(str || "");
@@ -30,7 +30,7 @@ ${text}`;
   return chatComplete([{ role: "user", content: prompt }]);
 }
 
-export async function postCallPipeline({
+async function postCallPipeline({
   callId,
   phone,
   clientNumber,
@@ -74,6 +74,7 @@ export async function postCallPipeline({
 
   logNS("pipeline", `✅ Pipeline complete for call ${callId}`);
 }
+module.exports = { postCallPipeline };
 
 // ============================================================================
 // END File services/pipeline.js

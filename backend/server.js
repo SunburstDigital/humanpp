@@ -1,6 +1,7 @@
 // server.js — Starts the Fastify server (separated for testability)
-import app, { setupApp } from './app.js';
-import { logger } from './utils/logging.js';
+const app = require('./app.js');
+const { setupApp } = require('./app.js');
+const { logger } = require('./utils/logging.js');
 
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "0.0.0.0";

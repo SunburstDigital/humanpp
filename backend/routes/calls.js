@@ -7,22 +7,15 @@
 //          summaries + lifecycle events.
 // ============================================================================
 
-import { twilioHandleCallStatus, twilioHandleCallStart } from "../providers/twilio/twilio-voice.js";
 
-// ---------------------------------------------------------------------------
-// Fastify route registration
-// ---------------------------------------------------------------------------
-export default async function callRoutes(app) {
-  // -------------------------------------------------------------------------
-  // Call status callback (Twilio posts multiple times per call lifecycle)
-  // -------------------------------------------------------------------------
+const { twilioHandleCallStatus, twilioHandleCallStart } = require("../providers/twilio/twilio-voice.js");
+
+async function callRoutes(app) {
   app.post("/twilio/call-status", twilioHandleCallStatus);
-
-  // -------------------------------------------------------------------------
-  // Optional: explicit call start logging
-  // -------------------------------------------------------------------------
   app.post("/twilio/call-start", twilioHandleCallStart);
 }
+
+module.exports = callRoutes;
 
 // ============================================================================
 // END File: routes/calls.js

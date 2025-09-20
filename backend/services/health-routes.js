@@ -1,10 +1,10 @@
 // ============================================================================
 // START File services/health-routes.js
 // ============================================================================
-export default async function healthRoutes(fastify) {
+async function healthRoutes(fastify) {
   fastify.get("/health/deps", async () => {
-    // dynamic import so module side-effects aren’t duplicated
-    const pine = await import("./pinecone.js");
+    // require so module side-effects aren’t duplicated
+    const pine = require("./pinecone.js");
 
     const pineHealth = await pine.health();
     const supaOk = !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY);
@@ -20,6 +20,8 @@ export default async function healthRoutes(fastify) {
     };
   });
 }
+
+module.exports = healthRoutes;
 // ============================================================================
 // END File services/health-routes.js
 // ============================================================================

@@ -1,6 +1,8 @@
-import { twilioHandleIncomingSms, twilioHandleSmsStatus } from "../providers/twilio/twilio-sms.js";
+const { twilioHandleIncomingSms, twilioHandleSmsStatus } = require("../providers/twilio/twilio-sms.js");
 
-export default function smsRoutes(app) {
+function smsRoutes(app) {
   app.post("/twilio/incoming-sms", twilioHandleIncomingSms);
   app.post("/twilio/sms-status", twilioHandleSmsStatus);
 }
+
+module.exports = smsRoutes;

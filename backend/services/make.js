@@ -5,12 +5,14 @@
 // listing_match, CRM inject). Adds optional bearer token if provided.
 // ============================================================================
 
-import { request } from "undici";
+const { request } = require("undici");
+
 
 const BASE = process.env.MAKE_BASE_URL || ""; // e.g. https://hook.integromat.com/abc123
 const TOKEN = process.env.MAKE_TOKEN || "";   // optional
 
-export async function makeCall(path, body) {
+
+async function makeCall(path, body) {
   if (!BASE) return null; // allow local dev without Make
   const url = `${BASE}${path}`;
   const headers = { "Content-Type": "application/json" };
@@ -30,6 +32,8 @@ export async function makeCall(path, body) {
     return { ok: statusCode >= 200 && statusCode < 300, raw: text };
   }
 }
+
+module.exports = { makeCall };
 
 // ============================================================================
 // END File services/make.js

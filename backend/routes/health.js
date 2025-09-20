@@ -2,7 +2,7 @@
 // Health Routes
 // Purpose: Root + health check endpoints
 // ======================================================================================
-export default async function healthRoutes(app) {
+async function healthRoutes(app) {
   app.get("/", async () => ({ ok: true, message: "Sunburst Voice is live" }));
 
   app.get("/health", async () => ({
@@ -13,3 +13,5 @@ export default async function healthRoutes(app) {
     },
   }));
 }
+
+module.exports = healthRoutes;

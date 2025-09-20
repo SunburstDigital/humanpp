@@ -7,11 +7,11 @@
 
 const store = new Map(); // callId -> string[]
 
-export function sessionNotesStart(callId) {
+function sessionNotesStart(callId) {
   if (!store.has(callId)) store.set(callId, []);
 }
 
-export function sessionNotesAdd(callId, bullet) {
+function sessionNotesAdd(callId, bullet) {
   const arr = store.get(callId) || [];
   if (!bullet) return;
   // Keep last 6 bullets max (tiny rolling memory)
@@ -19,16 +19,22 @@ export function sessionNotesAdd(callId, bullet) {
   store.set(callId, next);
 }
 
-export function sessionNotesString(callId) {
+function sessionNotesString(callId) {
   const arr = store.get(callId) || [];
   if (!arr.length) return "";
   return `\n### Session Notes\n${arr.join("\n")}\n`;
 }
 
-export function sessionNotesEnd(callId) {
+function sessionNotesEnd(callId) {
   store.delete(callId);
 }
 
+module.exports = {
+  sessionNotesStart,
+  sessionNotesAdd,
+  sessionNotesString,
+  sessionNotesEnd
+};
 // ============================================================================
 // END File services/session-notes.js
 // ============================================================================

@@ -2,10 +2,10 @@
 // File: routes/logs.js
 // Purpose: Fetch recent logs, logs per contact, and test Supabase connectivity
 // ======================================================================================
-import { getRecentLogs, getLogsByContact } from "../services/supabase.js";
-import { logger } from "../utils/logging.js";
+const { getRecentLogs, getLogsByContact } = require("../services/supabase.js");
+const { logger } = require("../utils/logging.js");
 
-export default async function logRoutes(app) {
+async function logRoutes(app) {
   // Recent logs
   app.get("/logs/recent", async (req, reply) => {
     try {
@@ -40,3 +40,5 @@ export default async function logRoutes(app) {
     }
   });
 }
+
+module.exports = logRoutes;

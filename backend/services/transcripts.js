@@ -5,13 +5,13 @@
 // Handles saving transcripts + audio URLs into Supabase.
 // Dependencies: services/supabase.js, utils/logging.js
 // ============================================================================
-import { saveCallTranscript } from "./supabase.js";
-import { logNS } from "../utils/logging.js";
+const { saveCallTranscript } = require("./supabase.js");
+const { logNS } = require("../utils/logging.js");
 
 // ============================================================================
 // START Route Handler
 // ============================================================================
-export default async function transcriptRoutes(fastify) {
+async function transcriptRoutes(fastify) {
   fastify.post("/transcripts/save", async (req, reply) => {
     const {
       call_id,
@@ -44,6 +44,8 @@ export default async function transcriptRoutes(fastify) {
     return reply.send({ ok: true });
   });
 }
+
+module.exports = transcriptRoutes;
 // ============================================================================
 // END Route Handler
 // ============================================================================

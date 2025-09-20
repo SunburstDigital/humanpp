@@ -1,7 +1,7 @@
 // utils/url-generator.js
 // Helper to generate signed Supabase Storage URLs for the transcripts bucket
-import { sb } from "../services/supabase.js";
-import { logNS } from "./logging.js";
+const { sb } = require("../services/supabase.js");
+const { logNS } = require("./logging.js");
 
 /**
  * Generate a signed URL for a file in the transcripts bucket.
@@ -18,7 +18,7 @@ import { logNS } from "./logging.js";
  *   // The backend will return { ok: true, url: "...signedUrl..." }
  *   // Use this signed URL to display or download the file securely.
  */
-export async function getTranscriptSignedUrl(filePath, expiresIn = 3600) {
+async function getTranscriptSignedUrl(filePath, expiresIn = 3600) {
   if (!filePath) return null;
   const { data, error } = await sb.storage
     .from("transcripts")
@@ -29,3 +29,4 @@ export async function getTranscriptSignedUrl(filePath, expiresIn = 3600) {
   }
   return data?.signedUrl || null;
 }
+module.exports = { getTranscriptSignedUrl };

@@ -1,8 +1,14 @@
-import app, { setupApp } from '../backend/app.js';
+
+const { setupApp } = require('../backend/app.js');
+let app;
+
 
 describe('API Endpoints', () => {
   beforeAll(async () => {
-    await setupApp();
+    app = await setupApp();
+  });
+  afterAll(async () => {
+    if (app && app.close) await app.close();
   });
 
   it('GET /health should return 200', async () => {

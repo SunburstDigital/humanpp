@@ -2,7 +2,9 @@
 
 // Add Twilio-specific helpers here as needed.
 
-export function twilioVerifySignature() {
+function twilioVerifySignature() {
   // Stub for signature verification
   return true;
 }
+
+module.exports = { twilioVerifySignature };

@@ -11,4 +11,4 @@ async function loadPromptById(promptId, { persona, slang } = {}) {
   return prompt;
 }
 
-export { loadPromptById };
+module.exports = { loadPromptById };

@@ -2,12 +2,12 @@
 // File: routes/tools.js
 // Purpose: Handle OpenAI tool calls (listing_match, calendar_book, ghl_crm_inject).
 // ======================================================================================
-import { getListingsByIds, upsertContact, makeInvoke, saveLog } from "../services/supabase.js";
-import { searchListingSnippets } from "../services/pinecone.js";
-import { logger } from "../utils/logging.js";
-import { getTranscriptSignedUrl } from "../utils/url-generator.js";
+const { getListingsByIds, upsertContact, makeInvoke, saveLog } = require("../services/supabase.js");
+const { searchListingSnippets } = require("../services/pinecone.js");
+const { logger } = require("../utils/logging.js");
+const { getTranscriptSignedUrl } = require("../utils/url-generator.js");
 
-export async function routeToolCall(name, args, { from, to, callSid }) {
+async function routeToolCall(name, args, { from, to, callSid }) {
   try {
     switch (name) {
       case "ghl_crm_inject": {
@@ -87,3 +87,5 @@ export async function routeToolCall(name, args, { from, to, callSid }) {
     return { ok: false, error: err.message };
   }
 }
+
+module.exports = { routeToolCall };

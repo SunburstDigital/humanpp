@@ -1,8 +1,8 @@
 // services/pdf.js
-import fs from "fs";
-import pdf from "pdf-parse";
+const fs = require("fs");
+const pdf = require("pdf-parse");
 
-export async function readPdf(filePath) {
+async function readPdf(filePath) {
   try {
     const dataBuffer = fs.readFileSync(filePath);
     const pdfData = await pdf(dataBuffer);
@@ -12,3 +12,5 @@ export async function readPdf(filePath) {
     throw err;
   }
 }
+
+module.exports = { readPdf };

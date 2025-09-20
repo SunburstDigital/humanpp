@@ -1,6 +1,6 @@
 // bookViewing.test.js
 // Stub test for bookViewing tool
-import { bookViewing } from '../tools/bookViewing.js';
+const bookViewing = require('../tools/real-estate/bookPropertyViewing.js');
 
 test('bookViewing returns ok', async () => {
   const result = await bookViewing({ name: 'Alice', propertyId: 123 });
