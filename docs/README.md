@@ -1,10 +1,29 @@
-Sunburst Digital AI – Documentation
+# Sunburst Digital AI – Documentation Index
 
-This folder contains all technical + process docs for Human++ Core and the Comms/Conversation System.
-Rule: If it’s not in /docs, it didn’t happen.
+All project documentation is organized into subject-specific folders.  
+This `README.md` is the only file in the `/docs` root.
 
-✅ Core Docs (Human++)
+---
 
+
+## 📂 Documentation Structure
+- [ai/](ai/) – AI testbed, policies, integrations  
+- [api/](api/) – API references and endpoints  
+- [architecture/](architecture/) – System and conversation design docs  
+- [infra/](infra/) – Infrastructure, schemas, and dev setups  
+- [onboarding/](onboarding/) – Client onboarding SOPs and checklists  
+- [messaging/](messaging/) – Messaging flows and guides  
+- [workflow/](workflow/) – Development workflows, notes, prompts  
+- [guides/](guides/) – Developer guides, references, comparisons  
+- [planning/](planning/) – Roadmaps, engagement flows, clarifications  
+- [rules/](rules/) – Numbers, domains, SMS routing rules  
+- [testing/](testing/) – Testing guides and coverage  
+- [troubleshooting/](troubleshooting/) – Troubleshooting guides  
+
+---
+
+👉 Start with [architecture/](architecture/) for system design,  
+or [onboarding/](onboarding/) for client-facing setup.
 client-onboarding.md
  → Initial onboarding process.
 

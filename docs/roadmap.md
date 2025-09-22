@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 # START File: roadmap.md
 # ============================================================================
 # Sunburst Voice System — Project Roadmap
@@ -53,10 +53,10 @@
 - 🚧 Fly.io deploy with domain
 - 🚧 Error logging, retries, metrics
 - 🚧 **AI Test Bed**: automated caller AI places test calls to Sunburst
-  - Confirms realtime loop works
-  - Checks Supabase logs + transcripts
-  - Sends outbound status notification
-  - Example: “Eva’s been tested and is functioning perfectly so she will be answering your calls today”
+	- Confirms realtime loop works
+	- Checks Supabase logs + transcripts
+	- Sends outbound status notification
+	- Example: “Eva’s been tested and is functioning perfectly so she will be answering your calls today”
 
 ---
 

@@ -28,6 +28,7 @@ const logRoutes = require("./routes/logs.js");
 const mediaStreamRoutes = require("./routes/media-stream.js");
 const mediaUrlRoutes = require("./routes/media-url.js");
 const summaryRoutes = require("./routes/summary.js");
+const webhooksRoutes = require("./routes/webhooks.js");
 
 // Service modules from services/
 const transcripts = require("./services/transcripts.js");
@@ -52,6 +53,7 @@ async function setupApp() {
   await app.register(mediaStreamRoutes);
   await app.register(mediaUrlRoutes);
   await app.register(summaryRoutes);
+  await app.register(webhooksRoutes);
 
   console.log("Logger is Pino instance?", typeof logger.info === "function"); // should print true
   return app;
