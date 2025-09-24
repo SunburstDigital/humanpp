@@ -7,7 +7,7 @@
 const path = require("path");
 const dotenv = require("dotenv");
 
-const envPath = path.resolve("infra", ".env");
+const envPath = path.resolve(__dirname, "..", "infra", ".env");
 dotenv.config({ path: envPath });
 
 console.log("[DEBUG] Loaded .env from:", envPath);

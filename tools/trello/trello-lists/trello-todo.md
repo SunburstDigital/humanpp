@@ -326,3 +326,34 @@ Write onboarding/quickstart for new devs/contractors:
 ### COMMENTS
 - *2025-09-22 Copilot*: Added onboarding/quickstart item from project plan.
 ===============================END==========================================
+===============================START========================================
+## ISSUE: Sunburst Voice System – API Map
+========================================================================
+- **Card ID:** api-map-todo
+- **Created:** 2025-09-22
+- **Status:** TODO
+### DESCRIPTION
+Checklist of all Fastify routes and services in the backend.
+### CHECKLIST
+- [ ] Health
+- [ ] GET /health → basic health check
+- [ ] SMS
+- [ ] POST /sms → inbound SMS handler
+- [ ] Calls
+- [ ] POST /calls → inbound call webhook
+- [ ] POST /calls/summary → save call summary in Supabase
+- [ ] Logs
+- [ ] GET /logs → fetch call/message logs
+- [ ] POST /logs → write new log entry
+- [ ] Media
+- [ ] POST /media-stream → handle real-time media streams
+- [ ] POST /media-url → accept recording/media URL callbacks
+- [ ] Summary
+- [ ] POST /summary → receive/store AI-generated call summary
+- [ ] Webhooks
+- [ ] POST /webhooks → generic webhook receiver
+- [ ] Services
+- [ ] transcripts.js → manages call transcripts in Supabase, used by summary routes
+### COMMENTS
+- *2025-09-22 Copilot*: Added API map card and checklist from project plan.
+===============================END==========================================

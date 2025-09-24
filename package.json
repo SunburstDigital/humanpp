@@ -4,8 +4,8 @@
   "description": "AI Team Member — Fastify backend with Pinecone + Supabase integration",
   "main": "backend/app.js",
   "scripts": {
-    "start": "node backend/app.js",
-    "dev": "nodemon backend/app.js",
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
     "test": "jest"
   },
   "dependencies": {
@@ -19,11 +19,14 @@
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "fastify": "^5.6.0",
+    "highlight.js": "^11.11.1",
+    "marked": "^16.3.0",
     "node-fetch": "^2.7.0",
     "openai": "^4.27.0",
     "pinecone-client": "^1.0.0",
     "pino": "^8.17.0",
     "pino-pretty": "^13.1.1",
+    "serve-index": "^1.9.1",
     "serve-static": "^2.2.0",
     "supabase": "^2.39.0"
   },

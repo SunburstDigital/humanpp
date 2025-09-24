@@ -98,3 +98,23 @@ Debug edge cases for Trello-to-markdown sync:
 ### COMMENTS
 - *2025-09-22 Copilot*: Added edge case debugging item from project plan.
 ===============================END==========================================
+## ISSUE: Sunburst Voice System – API Map
+========================================================================
+- **Card ID:** api-map-inprogress
+- **Created:** 2025-09-22
+- **Status:** IN PROGRESS
+### DESCRIPTION
+Scan backend repo (routes/ + services/) and list all Fastify endpoints.
+- For each route file, show the endpoint path, HTTP verb, and a one-line description.
+- For each service module, show its purpose and how it connects to routes.
+- Format as markdown checklist.
+### CHECKLIST
+- [ ] List all Fastify endpoints (path, verb, description)
+- [ ] List all service modules (purpose, route connection)
+- [ ] Format as markdown checklist
+### ENDPOINTS
+- [ ] **POST /webhooks/:channel/inbound**  
+  _Handles inbound webhook events (e.g., Trello, messaging, etc.). Logs payload and returns status._
+### COMMENTS
+- *2025-09-22 Copilot*: Added API map item from project plan.
+===============================END==========================================

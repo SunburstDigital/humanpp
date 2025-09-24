@@ -1,3 +1,6 @@
+// Copilot: check if all required modules (fastify, pino, etc.)
+// are installed. If MODULE_NOT_FOUND occurs, suggest `npm install <package-name>`
+// and ensure package.json has the dependency listed.
 // server.js — Starts the Fastify server (separated for testability)
 
 const { app, setupApp } = require('./app.js');
